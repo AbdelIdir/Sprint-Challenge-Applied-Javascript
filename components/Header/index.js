@@ -26,7 +26,7 @@ function header() {
 
     spanDate.textContent = "SMARCH 28, 2019";
     h1.textContent = "Lambda Times";
-    spanTemp.textContent = "98";
+    spanTemp.textContent = "98°";
 
 
  //////////////////////////////////////////////////////////  appender
@@ -39,9 +39,8 @@ return headDiv;
 }
 
 const container = document.querySelector(".header-container");
-
 container.appendChild(header());
+
 
 console.log(container);
 
-// console.log(container);
