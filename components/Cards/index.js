@@ -18,52 +18,53 @@
 //
 // Create a card for each of the articles and add the card to the DOM.
 
-function cardMaker (artcontent){
+function cardMaker(apiData) {
+  ////// creating my elements :
 
-////////////////////////////////////////////////////////////// element creator
-    const card = document.createElement("div");
-    const headline = document.createElement("div");
-    const author = document.createElement("div");
-    const imgCont = document.createElement("div");
-    const img = document.createElement("img");
-    const span = document.createElement("span");
-////////////////////////////////////////////////////////////// class creator
-    card.classList.add("card");
-    headline.classList.add("headline");
-    author.classList.add("author");
-    imgCont.classList.add("img-container");
-////////////////////////////////////////////////////////////// content appender
-    card.appendChild(headline);
-    card.appendChild(author);
-    author.appendChild(imgCont);
-    imgCont.appendChild(img);
-    author.appendChild(span);
- ////////////////////////////////////////////////////////////// content maker
-    headline.textContent = artcontent.headline;
-    img.src = artcontent.authorPhoto;
-    span.textContent = "By " + artcontent.authorName;
+  const divCard = document.createElement("div");
+  const divHeadline = document.createElement("div");
+  const divAuthor = document.createElement("div");
+  const divImgContainer = document.createElement("div");
+  const imgUrlOfAuthorsImage = document.createElement("img");
+  const spanAuthorsName = document.createElement("span");
 
-    return card;
+  ////// appending my elements to the relevant parents :
 
+  divCard.append(divHeadline, divAuthor);
+  divAuthor.append(divImgContainer, spanAuthorsName);
+  divImgContainer.append(imgUrlOfAuthorsImage);
+
+  //////// assign classes to some elements :
+
+  divCard.classList.add("card");
+  divHeadline.classList.add("headline");
+  divAuthor.classList.add("author");
+  divImgContainer.classList.add("img-container");
+
+  /////////// Feeding content to some elements :
+
+  divHeadline.textContent = apiData.headline;
+  imgUrlOfAuthorsImage.src = apiData.authorPhoto;
+  spanAuthorsName.textContent = apiData.authorName;
+
+  return divCard;
 }
 
-const containCards = document.querySelector(".cards-container");
+axios
+  .get("https://lambda-times-backend.herokuapp.com/articles")
+  .then(response => {
+    const apiDataArray = response.data.articles;
 
-axios.get("https://lambda-times-backend.herokuapp.com/articles")
+    Object.keys(apiDataArray).forEach(key => {
+      value = apiDataArray[key];
+      console.log(value);
+      value.forEach(info => {
+        const cardsContainer = document.querySelector(".cards-container");
 
-.then(response => {
-  console.log(response.data);
-  const art = response.data.articles;
-  console.log(art);
-  for( content in art){
-    const contentArr = art[content];
-    console.log(contentArr);
-    contentArr.forEach(element => {
-        const newArr = cardMaker(element);
-        containCards.appendChild(newArr);
+        cardsContainer.append(cardMaker(info));
+      });
     });
-  }
-})
-.catch(error => {
- console.error(error)
-});
+  })
+  .catch(error => {
+    console.log(error);
+  });
